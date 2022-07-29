@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model InvestmentFund {
+  id      String   @id @default(uuid())
+  name    String
+  CNPJ    String   @unique
+  status  Int      @default(1)
+  created DateTime @default(now())
+  updated DateTime @default(now())
+
+  @@map("investment_fund")
+}
