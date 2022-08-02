@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { HandlerJson } from './common/lib/handle';
-import InvestmentFund from './api/investmentFund';
+import InvestmentFund from './controllers/investmentFund';
+import Transactions from './controllers/transactions';
 
 const router = Router();
 
@@ -27,21 +28,45 @@ router.post('/investment-fund', (request: Request, response: Response) => {
 // PUT update
 router.put('/investment-fund/:id', (request: Request, response: Response) => {
     console.log('route - investment-fund - update');
-    console.log(request.body);
-
     const promise = investmentFund.update(request, response);
     HandlerJson(response, promise);
 });
-// PUT activate
-router.put('/investment-fund/activate/:id', (request: Request, response: Response) => {
-    console.log('route - investment-fund - activate');
-    const promise = investmentFund.activate(request, response);
+router.delete('/investment-fund/:id', (request: Request, response: Response) => {
+    console.log('rouet - investment-fund - remove');
+    const promise = investmentFund.remove(request, response);
     HandlerJson(response, promise);
 });
-// PUT deactivate
-router.put('/investment-fund/deactivate/:id', (request: Request, response: Response) => {
-    console.log('route - investment-fund - deactivate');
-    const promise = investmentFund.deactivate(request, response);
+
+// TRANSACTIONS
+const transactions = new Transactions();
+// GET list
+router.get('/transactions', (request: Request, response: Response) => {
+    console.log('route - transactions - list');
+    const promise = transactions.list(request, response);
+    HandlerJson(response, promise);
+});
+// GET fromId
+router.get('/transactions/:id', (request: Request, response: Response) => {
+    console.log('route - transactions - fromId');
+    const promise = transactions.fromId(request, response);
+    HandlerJson(response, promise);
+});
+// POST create
+router.post('/transactions', (request: Request, response: Response) => {
+    console.log('route - transactions - create');
+    const promise = transactions.create(request, response);
+    HandlerJson(response, promise);
+});
+// PUT update
+router.put('/transactions/:id', (request: Request, response: Response) => {
+    console.log('route - transactions - update');
+    const promise = transactions.update(request, response);
+    HandlerJson(response, promise);
+});
+// DELETE delete
+router.delete('/transactions/:id', (request: Request, response: Response) => {
+    console.log('route - transactions - remove');
+    const promise = transactions.remove(request, response);
     HandlerJson(response, promise);
 });
 

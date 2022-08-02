@@ -8,12 +8,31 @@ datasource db {
 }
 
 model InvestmentFund {
-  id      String   @id @default(uuid())
-  name    String
-  CNPJ    String   @unique
-  status  Int      @default(1)
-  created DateTime @default(now())
-  updated DateTime @default(now())
+  id           String         @id @default(uuid())
+  name         String
+  CNPJ         String         @unique
+  status       Int            @default(1)
+  created      DateTime       @default(now())
+  updated      DateTime       @default(now())
+  Transactions Transactions[]
 
   @@map("investment_fund")
+}
+
+model Transactions {
+  id               String         @id @unique @default(uuid())
+  investmentFund   InvestmentFund @relation(fields: [investmentFundId], references: [id])
+  investmentFundId String         @map("investment_fund_id")
+  type             Int
+  transactionDate  DateTime       @map("transaction_date")
+  quotaAmaunt      Int            @map("quota_amount")
+  amount           Int            @default(0)
+  unitPrice        Float          @map("unit_price")
+  averagePrice     Float          @default(0) @map("average_price")
+  returnOperation  Float          @default(0) @map("return_operation")
+  balance          Float          @default(0)
+  created          DateTime       @default(now())
+  updated          DateTime       @default(now())
+
+  @@map("transactions")
 }

@@ -1,0 +1,50 @@
+$paddingLeft: 34px;
+
+/* Table od List SCSS Module*/
+.tableList {
+  border: none !important;
+  color: #747474 !important;
+}
+.tableList thead tr th:first-child,
+.tableList tbody tr td:first-child {
+  padding-left: $paddingLeft !important;
+}
+.tableList thead tr th:last-child,
+.tableList tbody tr td:last-child {
+  padding-right: $paddingLeft !important;
+}
+.tableList thead tr th {
+  background: #ffffff !important;
+  border: none !important;
+  cursor: default !important;
+  color: #373737 !important;
+  text-align: left !important;
+  font: normal normal bold 12px/14px 'Sans';
+  letter-spacing: 0px;
+  text-transform: uppercase !important;
+  opacity: 1;
+}
+.tableList thead tr th p {
+  margin: 0 auto !important;
+}
+.tableList tbody tr td {
+  min-height: 45px !important;
+  height: 45px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #e7e7e7 !important;
+  font-size: 14px !important;
+}
+.tableList tbody tr:first-child td {
+  border-top: 1px solid #e7e7e7 !important;
+}
+.tableList tr:hover {
+  background: #fafafa !important;
+}
+
+.activeStatus {
+  color: #66c39b;
+}
+
+.inactiveStatus {
+  color: #e98777;
+}
