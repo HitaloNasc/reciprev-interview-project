@@ -6,7 +6,7 @@ import { Tab } from 'semantic-ui-react';
 import Page from './commons/Page';
 import PageContent from './commons/PageContent';
 import InvestmentFund from './pages/InvestmentFund';
-import Transactions from './pages/Transactions';
+// import Transactions from './pages/Transactions';
 
 function App() {
   const panes = [
@@ -20,10 +20,10 @@ function App() {
     //     </>
     //   ),
     // },
-    {
-      menuItem: 'TRANSAÇÕES',
-      render: () => <Transactions />,
-    },
+    // {
+    //   menuItem: 'TRANSAÇÕES',
+    //   render: () => <Transactions />,
+    // },
     {
       menuItem: 'FUNDOS DE INVESTIMENTO',
       render: () => <InvestmentFund />,

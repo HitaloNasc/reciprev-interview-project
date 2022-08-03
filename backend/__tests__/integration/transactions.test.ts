@@ -49,6 +49,7 @@ describe('## TRANSACTIONS ##', () => {
 
         it('should receive a single transaction by id', async () => {
             const fund = await investmentFund._fromCNPJ(FIRST_FUND.CNPJ);
+            //@ts-ignore
             const trans = await prismaClient.transactions.findFirst({ where: { investmentFundId: fund.id } });
 
             const response = await request(app).get(`/transactions/${trans?.id}`);

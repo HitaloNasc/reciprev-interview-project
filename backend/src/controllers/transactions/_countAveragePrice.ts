@@ -19,11 +19,13 @@ export async function _countAveragePrice(investmentFundId: string, unitPrice: nu
         if (type === TRANSACTIONS.TYPE.PURCHASE) purchaseOperations.push({ quotaAmaunt, unitPrice, type });
 
         let averagePurchase = 0;
+        let amountPurchase = 0;
         purchaseOperations.forEach((operation) => {
             averagePurchase += operation.quotaAmaunt * operation.unitPrice;
+            amountPurchase += operation.quotaAmaunt;
         });
 
-        averagePrice = averagePurchase / purchaseOperations.length;
+        averagePrice = averagePurchase / amountPurchase;
     }
 
     return averagePrice;

@@ -10,8 +10,8 @@ interface Transactions {
     averagePrice?: number;
     returnOperation?: number;
     balance?: number;
-    created?: string;
-    updated?: string;
+    created?: Date;
+    updated?: Date;
 }
 
 export async function _create({
@@ -24,6 +24,8 @@ export async function _create({
     averagePrice,
     returnOperation,
     balance,
+    created,
+    updated,
 }: Transactions) {
     console.log('api - transacntions - _create');
 
@@ -37,8 +39,8 @@ export async function _create({
         averagePrice,
         returnOperation,
         balance,
-        created: new Date().toISOString(),
-        updated: new Date().toISOString(),
+        created,
+        updated,
     };
 
     const transactions = await prismaClient.transactions.create({ data: transaction_data });

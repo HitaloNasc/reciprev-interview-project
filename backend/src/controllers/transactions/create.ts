@@ -16,6 +16,8 @@ interface Transactions {
     averagePrice?: number;
     returnOperation?: number;
     balance?: number;
+    created?: Date;
+    updated?: Date;
 }
 
 export async function create(request: Request, response: Response) {
@@ -23,7 +25,7 @@ export async function create(request: Request, response: Response) {
 
     const { investmentFundId, type, transactionDate, quotaAmaunt, unitPrice }: Transactions = request.body;
 
-    console.log({ investmentFundId, type, transactionDate, quotaAmaunt, unitPrice });
+    // console.log({ investmentFundId, type, transactionDate, quotaAmaunt, unitPrice });
 
     const obrigatory = ['investmentFundId', 'type', 'transactionDate', 'quotaAmaunt', 'unitPrice'];
     obrigatory.forEach((param) => {
@@ -46,11 +48,19 @@ export async function create(request: Request, response: Response) {
     if (type === TRANSACTIONS.TYPE.PURCHASE) amount += quotaAmaunt;
     if (type === TRANSACTIONS.TYPE.SALE) amount -= quotaAmaunt;
 
+    // console.log('amount', amount);
+
     let averagePrice = await _countAveragePrice(investmentFundId, unitPrice, quotaAmaunt, type);
+
+    // console.log('averagePrice', averagePrice);
 
     const returnOperation = unitPrice / averagePrice - 1;
 
+    // console.log('returnOperation', returnOperation);
+
     const balance = await _countBalance(investmentFundId, unitPrice, quotaAmaunt, type);
+
+    // console.log('balance', balance);
 
     const transaction_data: Transactions = {
         investmentFundId,
@@ -62,6 +72,8 @@ export async function create(request: Request, response: Response) {
         averagePrice,
         returnOperation,
         balance,
+        created: new Date(),
+        updated: new Date(),
     };
 
     const transaction = await _create(transaction_data);
