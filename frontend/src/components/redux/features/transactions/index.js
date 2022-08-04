@@ -9,12 +9,24 @@ const initialSatate = {
 };
 
 export const listTransactions = createAction('LIST_TRANSACTIONS');
+export const listByDateTransactions = createAction('LIST_BY_DATE_TRANSACTIONS');
 export const addTransactions = createAction('CREATE_TRANSACTIONS');
 export const attTransactions = createAction('UPDATE_TRANSACTIONS');
 export const deleteTransactions = createAction('DELETE_TRANSACTIONS');
 
 export default createReducer(initialSatate, {
   [listTransactions.type]: (state, action) => {
+    const data = [...action.payload];
+    return {
+      ...state,
+      loadedData: [...data],
+      filter: {
+        ...state.filter,
+        data,
+      },
+    };
+  },
+  [listByDateTransactions.type]: (state, action) => {
     const data = [...action.payload];
     return {
       ...state,

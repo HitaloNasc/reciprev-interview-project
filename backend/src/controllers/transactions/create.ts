@@ -9,7 +9,7 @@ import { _countBalance } from './_countBalance';
 interface Transactions {
     investmentFundId: string;
     type: number;
-    transactionDate: Date;
+    transactionDate: string;
     quotaAmaunt: number;
     unitPrice: number;
     amount?: number;
@@ -65,7 +65,7 @@ export async function create(request: Request, response: Response) {
     const transaction_data: Transactions = {
         investmentFundId,
         type,
-        transactionDate,
+        transactionDate: new Date(transactionDate).toISOString(),
         quotaAmaunt,
         unitPrice,
         amount,

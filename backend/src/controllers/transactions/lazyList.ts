@@ -4,7 +4,7 @@ import { _lazyList } from './_lazyList';
 interface Transactions {
     investmentFundId?: object;
     type?: object;
-    transactionDate?: object;
+    transactionDate?: string;
     quotaAmaunt?: object;
     unitPrice?: object;
     amount?: object;
@@ -22,7 +22,7 @@ export async function lazyList(request: Request, response: Response) {
     const transactions = await _lazyList({
         investmentFundId,
         type,
-        transactionDate,
+        transactionDate: transactionDate && new Date(transactionDate).toISOString(),
         quotaAmaunt,
         unitPrice,
         amount,

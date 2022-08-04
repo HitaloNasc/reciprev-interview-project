@@ -4,7 +4,7 @@ import { _fromId } from './_fromId';
 interface Transactions {
     investmentFundId?: string;
     type?: number;
-    transactionDate?: Date;
+    transactionDate?: string;
     quotaAmaunt?: number;
     unitPrice?: number;
     amount?: number;

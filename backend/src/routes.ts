@@ -45,16 +45,16 @@ router.get('/transactions', (request: Request, response: Response) => {
     const promise = transactions.list(request, response);
     HandlerJson(response, promise);
 });
+// GET lazyList
+router.get('/transactions/lazy', (request: Request, response: Response) => {
+    console.log('route - transactions - lazyList');
+    const promise = transactions.lazyList(request, response);
+    HandlerJson(response, promise);
+});
 // GET fromId
 router.get('/transactions/:id', (request: Request, response: Response) => {
     console.log('route - transactions - fromId');
     const promise = transactions.fromId(request, response);
-    HandlerJson(response, promise);
-});
-// GET lazyList
-router.get('/transactions', (request: Request, response: Response) => {
-    console.log('route - transactions - lazyList');
-    const promise = transactions.lazyList(request, response);
     HandlerJson(response, promise);
 });
 // POST create

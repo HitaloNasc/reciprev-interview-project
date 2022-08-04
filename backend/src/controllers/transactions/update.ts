@@ -10,7 +10,7 @@ import { _countAveragePrice } from './_countAveragePrice';
 interface Transactions {
     investmentFundId?: string;
     type?: number;
-    transactionDate?: Date;
+    transactionDate?: string;
     quotaAmaunt?: number;
     unitPrice?: number;
     amount?: number;

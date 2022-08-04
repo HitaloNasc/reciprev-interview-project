@@ -24,7 +24,7 @@ model Transactions {
   investmentFund   InvestmentFund @relation(fields: [investmentFundId], references: [id])
   investmentFundId String         @map("investment_fund_id")
   type             Int
-  transactionDate  DateTime       @map("transaction_date")
+  transactionDate  String         @map("transaction_date")
   quotaAmaunt      Int            @map("quota_amount")
   amount           Int            @default(0)
   unitPrice        Float          @map("unit_price")

@@ -6,6 +6,11 @@ export async function list() {
   return await axios.get(base_url);
 }
 
+export async function lazyList(queryParams) {
+  const { transactionDate } = queryParams;
+  return await axios.get(`${base_url}/lazy?${transactionDate && 'transactionDate=' + transactionDate}`);
+}
+
 export async function update(data) {
   return await axios.put(`${base_url}/${data.id}`, data);
 }

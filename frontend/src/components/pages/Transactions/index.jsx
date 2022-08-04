@@ -13,7 +13,10 @@ import Col from 'react-bootstrap/Col';
 import MaskedInput from 'react-text-mask';
 import { DATE_MASK } from '../../../utils/masks';
 // redux
-import { getAllTransactions } from '../../redux/features/transactions/fetchActions';
+import {
+  getAllTransactions,
+  getByDateTransactions,
+} from '../../redux/features/transactions/fetchActions';
 import { openModal, ACTION } from '../../redux/features/transactionsModal';
 import { openConfirmModal } from '../../redux/features/confirmModal';
 
@@ -21,7 +24,8 @@ function Transactions() {
   const transactions = useSelector((state) => state.transactions);
   const dispatch = useDispatch();
 
-  const [state, setState] = useState({ dateSearch: undefined });
+  const initialState = { dateSearch: '' };
+  const [state, setState] = useState(initialState);
 
   useEffect(() => {
     dispatch(getAllTransactions());
@@ -34,12 +38,20 @@ function Transactions() {
     setState({ ...cState });
   };
 
+  const handleClickSearchByDate = () => {
+    dispatch(
+      getByDateTransactions({
+        transactionDate: state.dateSearch.split('/').reverse().join('-'),
+      }),
+    );
+  };
+
   return (
     <>
       <Row className="m-3 d-flex align-items-center">
         <Col>
           <Row className="d-flex justify-content-start">
-            <Col className='m-0 p-0'>
+            <Col className="m-0 p-0">
               <MaskedInput
                 type="text"
                 className="form-control"
@@ -50,11 +62,11 @@ function Transactions() {
               />
             </Col>
             <Col>
-              <Button
-                variant="outline-primary"
-                onClick={() => dispatch(openModal({ type: ACTION.CREATE }))}
-              >
+              <Button variant="outline-primary" className='me-2' onClick={handleClickSearchByDate}>
                 Buscar
+              </Button>
+              <Button variant="outline-dark" onClick={() => setState(initialState)}>
+                Limpar
               </Button>
             </Col>
           </Row>

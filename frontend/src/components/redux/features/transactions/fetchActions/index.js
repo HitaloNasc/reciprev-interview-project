@@ -1,10 +1,24 @@
 import * as Transactions from '../../../../../api/transactions';
-import { listTransactions, addTransactions, attTransactions, deleteTransactions } from '..';
+import {
+  listTransactions,
+  addTransactions,
+  attTransactions,
+  deleteTransactions,
+  listByDateTransactions,
+} from '..';
 
 export const getAllTransactions = () => {
   return (dispatch) => {
     Transactions.list()
       .then((res) => dispatch(listTransactions(res.data.message)))
+      .catch((err) => console.error(err));
+  };
+};
+
+export const getByDateTransactions = (queryParams) => {
+  return (dispatch) => {
+    Transactions.lazyList(queryParams)
+      .then((res) => dispatch(listByDateTransactions(res.data.message)))
       .catch((err) => console.error(err));
   };
 };
