@@ -1,109 +1,101 @@
+// global
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import { useDispatch } from 'react-redux';
-import { Button, Modal, Form } from 'semantic-ui-react';
+import { useDispatch, useSelector } from 'react-redux';
+// components
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import MaskedInput from 'react-text-mask';
 import { CNPJ_MASK } from '../../../utils/masks';
-
+// redux
 import {
   createInvestmentFund,
   updateInvestmentFund,
-  getAllInvestmentsFunds,
 } from '../../redux/features/investmentFunds/fetchActions';
+import { ACTION, closeModal } from '../../redux/features/investmentFundsModal';
 
-function InvestmentFundModal({ isUpdate, data }) {
+function InvestmentFundModal() {
   const initialState = (values = {}) => {
     return {
+      id: values.id || '',
       name: values.name || '',
       CNPJ: values.CNPJ || '',
+      isUpdate: values.isUpdate || false,
     };
   };
 
-  const [open, setOpen] = useState(false);
   const [state, setState] = useState(initialState());
 
+  const investmentFundModal = useSelector((state) => state.investmentFundModal);
   const dispatch = useDispatch();
 
+  const { isOpened } = investmentFundModal;
+
   useEffect(() => {
-    if (isUpdate) {
-      setState(initialState(data));
-    }
-  }, []);
+    const { data, type } = investmentFundModal;
+    setState(initialState({ ...data, isUpdate: type === ACTION.UPDATE }));
+  }, [investmentFundModal]);
 
   const handleOnChange = (field) => (e, target) => {
     const { value } = e.target || target;
     const cState = state;
-
     cState[field] = value;
-
     setState({ ...cState });
   };
 
   const handleOnConfirm = () => {
-    if (isUpdate) {
-      dispatch(updateInvestmentFund({ id: data.id, name: state.name, CNPJ: state.CNPJ }));
-      dispatch(getAllInvestmentsFunds());
-    } else {
-      !_.isEmpty(Object.values(state).filter((b) => b)) &&
-        dispatch(createInvestmentFund({ name: state.name, CNPJ: state.CNPJ }));
-      setState(initialState());
+    if (investmentFundModal.type === ACTION.UPDATE) {
+      dispatch(updateInvestmentFund({ id: state.id, name: state.name, CNPJ: state.CNPJ }));
     }
-    setOpen(false);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+    if (investmentFundModal.type === ACTION.CREATE) {
+      dispatch(createInvestmentFund({ name: state.name, CNPJ: state.CNPJ }));
+    }
+    dispatch(closeModal());
   };
 
   return (
-    <Modal
-      onClose={handleClose}
-      onOpen={() => setOpen(true)}
-      open={open}
-      trigger={isUpdate ? <Button secondary>Editar</Button> : <Button positive>Adicionar</Button>}
-      size="tiny"
-    >
-      <Modal.Header
-        content={
-          isUpdate
-            ? 'Editar Fundo de Investimento'.toLocaleUpperCase()
-            : 'Adicionar Fundo de Investimento'.toLocaleUpperCase()
-        }
-      />
-      <Modal.Content>
-        <Form>
-          <Form.Group>
-            <Form.Input
-              label="CNPJ"
-              placeholder="Ex.: 00.000.000/0001-00"
-              control={MaskedInput}
-              mask={CNPJ_MASK}
-              required
+    <Modal show={isOpened} onHide={() => dispatch(closeModal())} centered={true}>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          {(state.isUpdate ? 'Editar' : 'Adicionar') + ' fundo de investimento'}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <form>
+          <div className="mb-3">
+            <label htmlFor="cnpj" className="form-label">
+              CNPJ
+            </label>
+            <MaskedInput
+              type="text"
+              className="form-control"
               value={state.CNPJ}
+              mask={CNPJ_MASK}
               onChange={handleOnChange('CNPJ')}
-            ></Form.Input>
-            <Form.Input
-              label="RAZÃO SOCIAL"
-              placeholder="Ex.: Exemplo Ltda"
-              required
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="name" className="form-label">
+              Razão Social
+            </label>
+            <input
+              type="text"
+              className="form-control"
               value={state.name}
               onChange={handleOnChange('name')}
-            ></Form.Input>
-          </Form.Group>
-        </Form>
-      </Modal.Content>
-      <Modal.Actions>
-        <Button content="Cancelar" onClick={handleClose} />
-        <Button content="Confirmar" onClick={handleOnConfirm} primary />
-      </Modal.Actions>
+            />
+          </div>
+        </form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => dispatch(closeModal())}>
+          Cancelar
+        </Button>
+        <Button variant="primary" onClick={handleOnConfirm}>
+          Confirmar
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 }
-
-InvestmentFundModal.propTypes = {
-  isUpdate: PropTypes.bool,
-  data: PropTypes.object,
-};
 
 export default InvestmentFundModal;

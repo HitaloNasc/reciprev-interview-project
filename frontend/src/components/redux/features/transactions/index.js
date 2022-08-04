@@ -38,14 +38,9 @@ export default createReducer(initialSatate, {
     };
   },
   [attTransactions.type]: (state, action) => {
-    const loadedData = state.loadedData.map((row) => {
-      if (action.payload) {
-        if (action.payload.id) {
-          return row.id === action.payload.id ? action.payload : row;
-        }
-      }
-    });
-
+    const updateRow = action.payload;
+    const loadedData = state.loadedData.map((row) => (row.id === updateRow.id ? updateRow : row));
+    console.log(loadedData);
     return {
       ...state,
       loadedData,

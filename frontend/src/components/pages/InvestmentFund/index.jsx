@@ -1,31 +1,18 @@
-import React, { useState, useEffect } from 'react';
+// global
+import React, { useEffect } from 'react';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
-import { Input /* , Button */ } from 'semantic-ui-react';
-import PageContent from '../../commons/PageContent';
-import List from '../../commons/List';
+// components
 import InvestmentFundModal from '../../modals/InvestmentFundModal';
-import PopupInvestmentFund from './PopupInvestmentFund';
+import InvestmentFundConfirmModal from '../../modals/InvestmentFundConfirmModal';
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
+// redux
 import { getAllInvestmentsFunds } from '../../redux/features/investmentFunds/fetchActions';
-import styles from './InvestmentFund.module.scss';
-
-const parameters = [
-  { column: 'CNPJ', width: 1, property: 'CNPJ' },
-  { column: 'RAZÃO SOCIAL', width: 2, property: 'name' },
-];
+import { openModal, ACTION } from '../../redux/features/investmentFundsModal';
+import { openConfirmModal } from '../../redux/features/confirmModal';
 
 function InvestmentFund() {
-  const inicitalState = {
-    filters: {
-      search: '',
-    },
-  };
-  const [state, setState] = useState(inicitalState);
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' /* dispatch((parseInt(state.filters.search))) */);
-  };
-
   const investmentFunds = useSelector((state) => state.investmentFund);
   const dispatch = useDispatch();
 
@@ -33,47 +20,62 @@ function InvestmentFund() {
     dispatch(getAllInvestmentsFunds());
   }, []);
 
-  let data = [];
-
-  if (!_.isEmpty(investmentFunds.filter.data)) data = investmentFunds.filter.data;
-
-  const handleOnChange = (field) => (e, target) => {
-    const { value } = e.target || target;
-    const { filters } = state;
-
-    filters[field] = value;
-
-    setState((prevState) => {
-      return {
-        ...prevState,
-        filters,
-      };
-    });
-  };
-
   return (
     <>
-      <PageContent isSolid={false}>
-        <section className={styles.header}>
-          <span>
-            <Input
-              value={state.filters.search}
-              onChange={handleOnChange('search')}
-              placeholder="Pesquisar..."
-              icon="search"
-              onKeyPress={handleKeyPress}
-            />
-          </span>
-          <span>
-            <InvestmentFundModal />
-          </span>
-        </section>
-      </PageContent>
-      <PageContent isSolid={false}>
-        <List isSearch parameters={parameters} data={data}>
-          <PopupInvestmentFund />
-        </List>
-      </PageContent>
+      <div className="row justify-content-end">
+        <div className="col-1 justify-content-center">
+          <Button
+            variant="primary"
+            className="mb-2"
+            onClick={() => dispatch(openModal({ type: ACTION.CREATE }))}
+          >
+            Adicionar
+          </Button>
+        </div>
+      </div>
+
+      <Table striped responsive hover>
+        <thead className="text-center align-end">
+          <tr>
+            <th className="pt-3 align-top">Razão Social</th>
+            <th className="pt-3 align-top">CNPJ</th>
+            <th className="pt-3 align-top"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {!_.isEmpty(investmentFunds.filter.data) &&
+            investmentFunds.filter.data.map((elem) => {
+              if (!_.isNull(elem) && !_.isUndefined(elem)) {
+                return (
+                  <tr key={elem.id}>
+                    <td>{elem.name}</td>
+                    <td>{elem.CNPJ}</td>
+                    <td>
+                      <Button
+                        type="button"
+                        variant="outline-primary"
+                        className="me-2"
+                        onClick={() => dispatch(openModal({ type: ACTION.UPDATE, data: elem }))}
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline-dark"
+                        onClick={() => dispatch(openConfirmModal({ id: elem.id }))}
+                      >
+                        Excluir
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              }
+            })}
+        </tbody>
+      </Table>
+
+      <InvestmentFundModal />
+      <InvestmentFundConfirmModal />
     </>
   );
 }

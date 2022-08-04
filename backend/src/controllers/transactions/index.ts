@@ -4,6 +4,7 @@ import { list } from './list';
 import { update } from './update';
 import { fromInvestmentFundId } from './fromInvestmentFundId';
 import { remove } from './remove';
+import { lazyList } from './lazyList';
 // import { deleteMany } from './deleteMany';
 import { _create } from './_create';
 import { _fromId } from './_fromId';
@@ -22,6 +23,7 @@ export default class Transactions {
     update: Function;
     fromInvestmentFundId: Function;
     remove: Function;
+    lazyList: Function;
     // deleteMany: Function;
 
     // services
@@ -41,6 +43,7 @@ export default class Transactions {
         this.update = update;
         this.fromInvestmentFundId = fromInvestmentFundId;
         this.remove = remove;
+        this.lazyList = lazyList;
         // this.deleteMany = deleteMany;
 
         this._create = _create;

@@ -8,6 +8,8 @@ export async function create(request: Request, response: Response) {
 
     const { name, CNPJ } = request.body;
 
+    console.log({ name, CNPJ });
+
     const checkObrigatoriesParams = !name || !CNPJ;
     if (checkObrigatoriesParams) throw Errors.PRECONDITION_FAILED([{ key: 'investment_fund__not_has_mandatory_parameters' }]);
 

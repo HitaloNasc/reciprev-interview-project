@@ -1,116 +1,131 @@
-import React, { /* useState, */ useEffect } from 'react';
+// global
+import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import { format } from 'date-fns';
-import PageContent from '../../commons/PageContent';
-import List from '../../commons/List';
-import TransactionModal from '../../modals/TransactionModal';
-import PopupTransactions from './PopupTransactions';
+// components
+import TransactionsModal from '../../modals/TransactionsModal';
+import TransactionsConfirmModal from '../../modals/TransactionsConfirmModal';
+import Button from 'react-bootstrap/Button';
+import Table from 'react-bootstrap/Table';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import MaskedInput from 'react-text-mask';
+import { DATE_MASK } from '../../../utils/masks';
+// redux
 import { getAllTransactions } from '../../redux/features/transactions/fetchActions';
+import { openModal, ACTION } from '../../redux/features/transactionsModal';
+import { openConfirmModal } from '../../redux/features/confirmModal';
 
-import styles from './Transactions.module.scss';
-
-const parameters = [
-  { column: 'Fundo de Investimento', width: 4, property: 'investmentFund' },
-  { column: 'Data', width: 1, property: 'trasnsactionDateFormated' },
-  { column: 'Tipo', width: 1, property: 'typeName' },
-  { column: 'QTD', width: 1, property: 'quotaAmaunt' },
-  { column: 'Preço unitário', width: 1, property: 'unitPriceFormated' },
-  { column: 'Preço médio', width: 1, property: 'averagePriceFormated' },
-  { column: 'Retorno', width: 1, property: 'returnOperationFormated' },
-  { column: 'Total', width: 1, property: 'balance' },
-  { column: 'Saldo', width: 1, property: 'amount' },
-];
-
-function InvestmentFund() {
-  //   const inicitalState = {
-  //     filters: {
-  //       search: '',
-  //     },
-  //   };
-  //   const [state, setState] = useState(inicitalState);
-
-  //   const handleKeyPress = (e) => {
-  //     if (e.key === 'Enter' /* dispatch((parseInt(state.filters.search))) */);
-  //   };
-
+function Transactions() {
   const transactions = useSelector((state) => state.transactions);
   const dispatch = useDispatch();
+
+  const [state, setState] = useState({ dateSearch: undefined });
 
   useEffect(() => {
     dispatch(getAllTransactions());
   }, []);
 
-  let data = [];
-
-  if (!_.isUndefined(transactions) && !_.isNull(transactions)) {
-    data = transactions.filter.data.map((transaction) => {
-      if (!_.isUndefined(transaction) && !_.isNull(transaction)) {
-        console.log(transaction);
-        return {
-          id: transaction.id,
-          investmentFundId: transaction.investmentFundId,
-          investmentFund: `${transaction.investmentFund.name} - ${transaction.investmentFund.CNPJ}`,
-          transactionDate: transaction.transactionDate,
-          trasnsactionDateFormated: format(
-            new Date(transaction.transactionDate),
-            'dd/mm/yyyy HH:mm',
-          ),
-          type: transaction.type,
-          typeName: transaction.type == 1 ? 'COMPRA' : 'VENDA',
-          quotaAmaunt: transaction.quotaAmaunt,
-          unitPrice: transaction.unitPrice,
-          unitPriceFormated: `R$ ${transaction.unitPrice.toFixed(2)}`,
-          averagePrice: transaction.averagePrice,
-          averagePriceFormated: `R$ ${transaction.averagePrice.toFixed(2)}`,
-          returnOperation: transaction.returnOperation,
-          returnOperationFormated: `${(transaction.returnOperation * 100).toFixed(2)}%`,
-          amount: transaction.amount,
-          balance: transaction.balance,
-        };
-      }
-    });
-  }
-
-  //   const handleOnChange = (field) => (e, target) => {
-  //     const { value } = e.target || target;
-  //     const { filters } = state;
-
-  //     filters[field] = value;
-
-  //     setState((prevState) => {
-  //       return {
-  //         ...prevState,
-  //         filters,
-  //       };
-  //     });
-  //   };
+  const handleOnChange = (field) => (e, target) => {
+    let { value } = target || e.target;
+    const cState = state;
+    cState[field] = value;
+    setState({ ...cState });
+  };
 
   return (
     <>
-      <PageContent isSolid={false}>
-        <section className={styles.header}>
-          <span>
-            {/* <Input
-              value={state.filters.search}
-              onChange={handleOnChange('search')}
-              placeholder="Pesquisar..."
-              icon="search"
-              onKeyPress={handleKeyPress}
-            /> */}
-          </span>
-          <span>
-            <TransactionModal />
-          </span>
-        </section>
-      </PageContent>
-      <PageContent isSolid={false}>
-        <List isSearch parameters={parameters} data={data}>
-          <PopupTransactions />
-        </List>
-      </PageContent>
+      <Row className="m-3 d-flex align-items-center">
+        <Col>
+          <Row className="d-flex justify-content-start">
+            <Col className='m-0 p-0'>
+              <MaskedInput
+                type="text"
+                className="form-control"
+                placeholder="Busque uma data"
+                value={state.dateSearch}
+                mask={DATE_MASK}
+                onChange={handleOnChange('dateSearch')}
+              />
+            </Col>
+            <Col>
+              <Button
+                variant="outline-primary"
+                onClick={() => dispatch(openModal({ type: ACTION.CREATE }))}
+              >
+                Buscar
+              </Button>
+            </Col>
+          </Row>
+        </Col>
+        <Col className="d-flex justify-content-end">
+          <Button variant="primary" onClick={() => dispatch(openModal({ type: ACTION.CREATE }))}>
+            Adicionar
+          </Button>
+        </Col>
+      </Row>
+
+      <Table striped responsive hover>
+        <thead className="text-center align-end">
+          <tr>
+            <th className="pt-3 align-top">Razão social</th>
+            <th className="pt-3 align-top">CNPJ</th>
+            <th className="pt-3 align-top">Data</th>
+            <th className="pt-3 align-top">Tipo</th>
+            <th className="pt-3 align-top">Quantidade por operação</th>
+            <th className="pt-3 align-top">Preço por unidade</th>
+            <th className="pt-3 align-top">Quantidade total</th>
+            <th className="pt-3 align-top">Preço médio</th>
+            <th className="pt-3 align-top">Retorno por operação</th>
+            <th className="pt-3 align-top">Saldo</th>
+            <th className="pt-3 align-top"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {!_.isEmpty(transactions.filter.data) &&
+            transactions.filter.data.map((elem) => {
+              if (!_.isNull(elem) && !_.isUndefined(elem)) {
+                return (
+                  <tr key={elem.id} className="">
+                    <td className="text-nowrap">{elem.investmentFund.name}</td>
+                    <td className="text-nowrap">{elem.investmentFund.CNPJ}</td>
+                    <td>{format(new Date(elem.transactionDate), 'dd/MM/yyyy')}</td>
+                    <td>{elem.type === 1 ? 'Compra' : 'Venda'}</td>
+                    <td>{elem.quotaAmaunt}</td>
+                    <td>{elem.unitPrice}</td>
+                    <td>{elem.amount}</td>
+                    <td>{elem.averagePrice}</td>
+                    <td>{(elem.returnOperation * 100).toFixed(3)}</td>
+                    <td>{elem.balance}</td>
+                    <td className="d-flex justify-content-center align-items-center">
+                      <Button
+                        type="button"
+                        variant="outline-primary"
+                        className="me-2"
+                        onClick={() => dispatch(openModal({ type: ACTION.UPDATE, data: elem }))}
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline-dark"
+                        onClick={() => dispatch(openConfirmModal({ id: elem.id }))}
+                      >
+                        Excluir
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              }
+            })}
+        </tbody>
+      </Table>
+
+      <TransactionsModal />
+      <TransactionsConfirmModal />
     </>
   );
 }
 
-export default InvestmentFund;
+export default Transactions;

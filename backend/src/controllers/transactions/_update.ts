@@ -22,6 +22,7 @@ export async function _update(id: string, data: Transactions) {
     const transactions = await prismaClient.transactions.update({
         where: { id },
         data,
+        include: { investmentFund: true },
     });
 
     return transactions;

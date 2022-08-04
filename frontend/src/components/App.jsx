@@ -1,47 +1,25 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import store from './redux/store';
-
-import { Tab } from 'semantic-ui-react';
-import Page from './commons/Page';
-import PageContent from './commons/PageContent';
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import Container from 'react-bootstrap/Container';
 import InvestmentFund from './pages/InvestmentFund';
-// import Transactions from './pages/Transactions';
+import Transactions from './pages/Transactions';
 
 function App() {
-  const panes = [
-    // {
-    //   menuItem: 'DASHBOARD',
-    //   render: () => (
-    //     <>
-    //       <PageContent isSolid={false}>
-    //         <h1>GRÁFICOS</h1>
-    //       </PageContent>
-    //     </>
-    //   ),
-    // },
-    // {
-    //   menuItem: 'TRANSAÇÕES',
-    //   render: () => <Transactions />,
-    // },
-    {
-      menuItem: 'FUNDOS DE INVESTIMENTO',
-      render: () => <InvestmentFund />,
-    },
-  ];
-
   return (
     <Provider store={store}>
-      <Page>
-        <PageContent isSolid={false}>
-          <Tab
-            menu={{
-              pointing: false,
-            }}
-            panes={panes}
-          />
-        </PageContent>
-      </Page>
+      <Container className="mt-4">
+        <Tabs defaultActiveKey="transactions">
+          <Tab eventKey="transactions" title="Transações">
+            <Transactions />
+          </Tab>
+          <Tab eventKey="investmentFunds" title="Fundos de Investimento">
+            <InvestmentFund />
+          </Tab>
+        </Tabs>
+      </Container>
     </Provider>
   );
 }

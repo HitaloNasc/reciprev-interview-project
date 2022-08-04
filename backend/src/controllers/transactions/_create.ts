@@ -43,7 +43,7 @@ export async function _create({
         updated,
     };
 
-    const transactions = await prismaClient.transactions.create({ data: transaction_data });
+    const transactions = await prismaClient.transactions.create({ data: transaction_data, include: { investmentFund: true } });
 
     return transactions;
 }
